@@ -15,7 +15,7 @@
       url: "https://pointbookingofficial.com/"
     },
     {
-      src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiiNLZ8hQp7hYruI3kQBrK9PjJxiWE248j7Es7pCsxjwwCZ_K3ZHZK4IcokcLbut9Wpvz7RwGTqgSMqsk-eupxk5jG4D9a7c9Sc-exvOxS2urSNB_BQluzf0JucGag6EMCRxXMFrByAHollri1W1nzp3p9CmgXjoRB9WRKG-eC6PAeVgMN_7cSVempgmUni/w323-h306/Qr-Line-Pointbookingofficial.png",
+      src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiiNLZ8hQp7hYruI3kQBrK9PjJxiWE248j7Es7pCsxjwwCZ_K3ZHZK4IcokcLbut9Wpvz7RwGTgqSMqsk-eupxk5jG4D9a7c9Sc-exvOxS2urSNB_BQluzf0JucGag6EMCRxXMFrByAHollri1W1nzp3p9CmgXjoRB9WRKG-eC6PAeVgMN_7cSVempgmUni/w323-h306/Qr-Line-Pointbookingofficial.png",
       alt: "Line QR Code | +84 905-926-803",
       title: "Line QR Code | +84 905-926-803",
       url: "https://pointbookingofficial.com/"
