@@ -6,31 +6,21 @@
       src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi-68yXhw3S2e0RRbFo1OPD1sbRgfLwZnMr-KYyw-b7IUyYfdXRCbYr1DVeDETN-o4PzEd7gtC7La_RF6sv4t0ycrMI6ZyRpCuDU4a_u7yhGcpUp_y1U_gXrVRDw-6sdBk4kNZDZIbXVR4cc94IQiQaUYqvR6E0o1D2XBf0sxuiwSM7zFKK0aA7IlC7pyte/w259-h320/Qr-Kakaotalk-Pointbookingofficial.png",
       alt: "KakaoTalk | pointbookingofficial | +84 905-926-803",
       title: "KakaoTalk QR Code | pointbookingofficial | +84 905-926-803",
-      url: "https://pointbookingofficial.com/"
     },
     {
       src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgfLxmHY1bIhU8TKf97G4b8xSO9n62F2LobFQfcFd1LzYMn-XMXC8Oz_JBeK71E6xl-tMd9tkv6IGgxnkrvsQ-vRG5Ii4KeA_5cFiQgYMgsYUllmqNL69tUG3WgX48osr-bNJxBsgM326dzGP91HlII5zporU6bczSv1jrbVBCmdGi0EYTt6MGqsHmLaRD1/w267-h320/Qr-Wechat-Pointbookingofficial.png",
       alt: "WeChat QR Code | +84 905-926-803",
       title: "WeChat QR Code | +84 905-926-803",
-      url: "https://pointbookingofficial.com/"
-    },
-    {
-      src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiiNLZ8hQp7hYruI3kQBrK9PjJxiWE248j7Es7pCsxjwwCZ_K3ZHZK4IcokcLbut9Wpvz7RwGTgqSMqsk-eupxk5jG4D9a7c9Sc-exvOxS2urSNB_BQluzf0JucGag6EMCRxXMFrByAHollri1W1nzp3p9CmgXjoRB9WRKG-eC6PAeVgMN_7cSVempgmUni/w323-h306/Qr-Line-Pointbookingofficial.png",
-      alt: "Line QR Code | +84 905-926-803",
-      title: "Line QR Code | +84 905-926-803",
-      url: "https://pointbookingofficial.com/"
     },
     {
       src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYVNuczDfx_V7YM0dXYjV07xbqmu9-iG8l24yr5YKewFKjb03TihX6_fNbmia3Thyb9U3P5BHeEVrekb1D1BAiY9M8T65syiR3kj2xSB_Y867d24dvJM_gXZg3gleYCusOwvm_fZU7qbKDgqXVNtrIbUvnG4Jt86E_Ovil5ntwEyjmoNiTqoJ6E9VWgcv_/w236-h320/Qr-Telegram-Pointbookingofficial.png",
       alt: "Telegram QR Code | @pointbookingofficial",
       title: "Telegram QR Code | @pointbookingofficial",
-      url: "https://pointbookingofficial.com/"
     },
     {
       src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiF7RI0BvlVw0_5t1sFEpThsvPIQiv0fHAnoV0bAyb13vPRdL1gU1QXuDpsiLxu4_8Cc8MWvkQZoMApLPaIYVgxEPHGgIHHooIFmXsOoGSMClff3lZd-igZsyC0_FYiYPsEBRm13KW9__JEKvR8mq7pFZXHTR8addKC0eK2g0bXlBgV_ClnYbLnVilDin_-/w244-h320/Qr-Zalo-Pointbookingofficial.png",
       alt: "Zalo QR Code | Point Booking",
       title: "Zalo QR Code | Point Booking",
-      url: "https://pointbookingofficial.com/"
     }
   ];
 
