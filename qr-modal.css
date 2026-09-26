@@ -1,0 +1,512 @@
+<style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f5f5;
+    }
+
+    /* =========================================================
+       MODAL
+    ========================================================= */
+html body .image-modal {
+  position: fixed !important;
+
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  width: 100vw !important;
+  height: 100vh !important;
+
+  margin: 0 !important;
+  padding: 20px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: rgba(0, 0, 0, 0.92) !important;
+
+  z-index: 2147483647 !important;
+
+  overflow: hidden !important;
+}
+
+html body .image-modal.hidden {
+  display: none !important;
+}
+
+    /* =========================================================
+       CLOSE BUTTON
+    ========================================================= */
+
+    .close-btn {
+      position: absolute;
+
+      top: 15px;
+      right: 25px;
+
+      width: 50px;
+      height: 50px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: none;
+      background: transparent;
+
+      color: #ffffff;
+
+      font-size: 42px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      z-index: 100001;
+
+      transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .close-btn:hover {
+      color: #f35525;
+      transform: scale(1.1);
+    }
+
+
+    /* =========================================================
+       MODAL CONTENT
+    ========================================================= */
+
+    .modal-content {
+      width: 100%;
+      max-width: 1200px;
+
+      height: min(90vh, 700px);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      position: relative;
+    }
+
+
+    /* =========================================================
+       IMAGE CONTAINER
+    ========================================================= */
+
+    .image-container {
+      position: relative;
+
+      width: 100%;
+      height: 75%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow: hidden;
+
+      touch-action: none;
+
+      user-select: none;
+
+      background: transparent;
+    }
+
+
+    /* =========================================================
+       MAIN IMAGE
+    ========================================================= */
+
+    .modal-img {
+      display: block;
+
+      max-width: 100%;
+      max-height: calc(100% - 45px);
+
+      width: auto;
+      height: auto;
+
+      object-fit: contain;
+
+      user-select: none;
+      -webkit-user-drag: none;
+
+      transform-origin: center center;
+
+      will-change: transform;
+
+      cursor: pointer;
+    }
+
+    .modal-img.dragging {
+      cursor: grabbing;
+    }
+
+    .modal-img.zoomed {
+      cursor: grab;
+    }
+
+
+    /* =========================================================
+       TITLE
+    ========================================================= */
+
+    .modal-title {
+      position: absolute;
+
+      bottom: 5px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: calc(100% - 100px);
+
+      color: #ffffff;
+
+      text-align: center;
+
+      font-size: 16px;
+      font-weight: 500;
+
+      line-height: 1.4;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      pointer-events: none;
+    }
+
+
+    /* =========================================================
+       PREVIOUS / NEXT
+    ========================================================= */
+
+    .prev-btn,
+    .next-btn {
+      position: absolute;
+
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      width: 50px;
+      height: 50px;
+
+      border: none;
+      border-radius: 50%;
+
+      background: rgba(0, 0, 0, 0.65);
+
+      color: #ffffff;
+
+      font-size: 28px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+
+      z-index: 20;
+
+      transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .prev-btn {
+      left: 15px;
+    }
+
+    .next-btn {
+      right: 15px;
+    }
+
+    .prev-btn:hover,
+    .next-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+
+      color: #f35525;
+
+      transform: translateY(-50%) scale(1.08);
+    }
+
+
+    /* =========================================================
+       THUMBNAILS
+    ========================================================= */
+
+    .modal-thumbs {
+      width: 100%;
+
+      height: 85px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+
+      padding: 10px 0;
+
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      scroll-behavior: smooth;
+
+      scrollbar-width: thin;
+
+      scrollbar-color: #f35525 transparent;
+    }
+
+    .modal-thumbs::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    .modal-thumbs::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .modal-thumbs::-webkit-scrollbar-thumb {
+      background: #f35525;
+      border-radius: 10px;
+    }
+
+
+    /* =========================================================
+       THUMB IMAGE
+    ========================================================= */
+
+    .thumb {
+      flex: 0 0 auto;
+
+      width: 80px;
+      height: 60px;
+
+      object-fit: cover;
+
+      border-radius: 6px;
+
+      border: 2px solid transparent;
+
+      opacity: 0.65;
+
+      cursor: pointer;
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .thumb:hover {
+      opacity: 1;
+
+      transform: scale(1.05);
+    }
+
+    .thumb.active {
+      opacity: 1;
+
+      border-color: #f35525;
+    }
+
+
+    /* =========================================================
+       BOOK NOW
+    ========================================================= */
+
+    .ota-button {
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      min-width: 150px;
+
+      margin-top: 8px;
+
+      padding: 10px 24px;
+
+      border-radius: 8px;
+
+      background: #ff6600;
+
+      color: #ffffff;
+
+      text-decoration: none;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .ota-button:hover {
+      background: #000000;
+
+      transform: scale(1.03);
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 479px) {
+
+      .image-modal {
+        padding: 10px;
+      }
+
+      .close-btn {
+        top: 8px;
+        right: 8px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 32px;
+      }
+
+      .modal-content {
+        width: 100%;
+        height: 92vh;
+      }
+
+      .image-container {
+        height: 68%;
+      }
+
+      .modal-img {
+        max-width: 100%;
+        max-height: calc(100% - 40px);
+      }
+
+      .modal-title {
+        width: calc(100% - 80px);
+
+        font-size: 13px;
+      }
+
+      .prev-btn,
+      .next-btn {
+        width: 40px;
+        height: 40px;
+
+        font-size: 20px;
+      }
+
+      .prev-btn {
+        left: 5px;
+      }
+
+      .next-btn {
+        right: 5px;
+      }
+
+      .modal-thumbs {
+        height: 65px;
+
+        gap: 6px;
+      }
+
+      .thumb {
+        width: 60px;
+        height: 45px;
+      }
+
+      .ota-button {
+        margin-top: 5px;
+
+        padding: 9px 20px;
+
+        font-size: 14px;
+      }
+    }
+
+
+    /* =========================================================
+       TABLET
+    ========================================================= */
+
+    @media (min-width: 480px) and (max-width: 768px) {
+
+      .modal-content {
+        width: 95%;
+        height: 88vh;
+      }
+
+      .image-container {
+        height: 72%;
+      }
+
+      .modal-title {
+        font-size: 14px;
+      }
+
+      .prev-btn,
+      .next-btn {
+        width: 45px;
+        height: 45px;
+
+        font-size: 23px;
+      }
+
+      .thumb {
+        width: 70px;
+        height: 50px;
+      }
+    }
+
+
+    /* =========================================================
+       TABLET / SMALL LAPTOP
+    ========================================================= */
+
+    @media (min-width: 769px) and (max-width: 991px) {
+
+      .modal-content {
+        width: 90%;
+        height: 85vh;
+      }
+
+      .image-container {
+        height: 75%;
+      }
+
+      .modal-title {
+        font-size: 15px;
+      }
+    }
+
+
+    /* =========================================================
+       REDUCE MOTION
+    ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
