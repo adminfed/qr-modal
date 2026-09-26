@@ -1,5 +1,4 @@
-<style>
-    * {
+ * {
       box-sizing: border-box;
     }
 
@@ -509,4 +508,3 @@ html body .image-modal.hidden {
         transition: none !important;
       }
     }
-  </style>
