@@ -1,0 +1,35 @@
+/* Khung chứa danh sách ảnh hoặc nội dung cuộn */
+.scroll-container {
+  display: flex;
+  overflow-x: auto; /* Bật cuộn ngang */
+  white-space: nowrap;
+
+  /* Đảm bảo thanh cuộn luôn hoạt động mượt */
+  scroll-behavior: smooth;
+
+  /* Dành cho Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #888888 #f1f1f1; /* [Màu thanh trượt] [Màu nền thanh cuộn] */
+}
+
+/* Chiều cao của thanh cuộn ngang (Chrome, Safari, Edge) */
+.scroll-container::-webkit-scrollbar {
+  height: 8px; /* Độ dày thanh cuộn ngang */
+}
+
+/* Nền của thanh cuộn */
+.scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+/* Thanh trượt (Thumb) - phần di chuyển */
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #888888;
+  border-radius: 4px;
+}
+
+/* Hiệu ứng khi di chuột vào thanh trượt */
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
