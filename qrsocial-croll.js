@@ -1,32 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const modalThumbs = document.getElementById("modalThumbs");
+  const galleryThumbs = document.getElementById("modalThumbs");
 
-  const imageContainer = document.getElementById("imageContainer");
+  const galleryImageContainer = document.getElementById("imageContainer");
 
-  const prevBtn = document.getElementById("prevBtn");
+  const galleryModalImg = document.getElementById("modalImg");
 
-  const nextBtn = document.getElementById("nextBtn");
+  const galleryPrevBtn = document.getElementById("prevBtn");
+
+  const galleryNextBtn = document.getElementById("nextBtn");
 
   // ==========================================
-  // 1. & 2. CUỘN THUMBNAIL
+  // 1. CUỘN CHUỘT TRÊN THUMBNAIL
   // ==========================================
 
-  if (modalThumbs) {
-    modalThumbs.addEventListener(
+  if (galleryThumbs) {
+    galleryThumbs.addEventListener(
       "wheel",
       function (e) {
-        /*
-         * Chỉ chuyển cuộn dọc thành cuộn ngang
-         * khi thumbnail thực sự có thể cuộn.
-         */
-
         if (
           Math.abs(e.deltaY) > Math.abs(e.deltaX) &&
-          modalThumbs.scrollWidth > modalThumbs.clientWidth
+          galleryThumbs.scrollWidth > galleryThumbs.clientWidth
         ) {
           e.preventDefault();
 
-          modalThumbs.scrollLeft += e.deltaY * 1.5;
+          galleryThumbs.scrollLeft += e.deltaY * 1.5;
         }
       },
       {
@@ -35,22 +32,209 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // ==========================================
-    // CLICK THUMBNAIL
+    // 2. CLICK THUMBNAIL
     // ==========================================
 
-    modalThumbs.addEventListener("click", function (e) {
+    galleryThumbs.addEventListener("click", function (e) {
       const targetThumb = e.target.closest("img, .thumb-item");
 
-      if (targetThumb) {
-        scrollToActiveThumb(targetThumb);
+      if (!targetThumb) {
+        return;
       }
+
+      setTimeout(function () {
+        syncGalleryThumbnail();
+      }, 50);
     });
+  }
 
-    // ==========================================
-    // THEO DÕI THUMBNAIL ACTIVE
-    // ==========================================
+  // ==========================================
+  // 3. CUỘN CHUỘT TRÊN ẢNH CHÍNH
+  // ==========================================
 
+  if (galleryImageContainer) {
+    galleryImageContainer.addEventListener(
+      "wheel",
+      function (e) {
+        /*
+         * Chỉ xử lý khi người dùng cuộn
+         * theo chiều dọc.
+         */
+
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) {
+          return;
+        }
+
+        /*
+         * Ngăn trang phía sau popup cuộn.
+         */
+
+        e.preventDefault();
+
+        /*
+         * Chống chuyển ảnh quá nhanh.
+         */
+
+        if (galleryWheelLocked) {
+          return;
+        }
+
+        galleryWheelLocked = true;
+
+        /*
+         * Cuộn xuống
+         * → ảnh tiếp theo
+         */
+
+        if (e.deltaY > 0) {
+          if (galleryNextBtn) {
+            galleryNextBtn.click();
+          }
+        } else {
+          /*
+           * Cuộn lên
+           * → ảnh trước
+           */
+
+          if (galleryPrevBtn) {
+            galleryPrevBtn.click();
+          }
+        }
+
+        /*
+         * Cho phép cuộn ảnh tiếp theo
+         * sau 350ms.
+         */
+
+        setTimeout(function () {
+          galleryWheelLocked = false;
+        }, 350);
+      },
+      {
+        passive: false,
+      },
+    );
+  }
+
+  // Khóa wheel trong thời gian ngắn
+
+  let galleryWheelLocked = false;
+
+  // ==========================================
+  // 4. TÌM THUMBNAIL ĐANG HIỂN THỊ
+  // ==========================================
+
+  function getCurrentGalleryThumbnail() {
+    if (!galleryThumbs || !galleryModalImg) {
+      return null;
+    }
+
+    /*
+     * Ưu tiên thumbnail đang active
+     */
+
+    const activeThumb = galleryThumbs.querySelector(
+      '.active, .selected, [aria-selected="true"]',
+    );
+
+    if (activeThumb) {
+      return activeThumb;
+    }
+
+    /*
+     * Nếu không có active,
+     * tìm thumbnail có cùng src với ảnh chính.
+     */
+
+    const currentSrc = galleryModalImg.currentSrc || galleryModalImg.src;
+
+    if (!currentSrc) {
+      return null;
+    }
+
+    const thumbnails = galleryThumbs.querySelectorAll("img");
+
+    for (let i = 0; i < thumbnails.length; i++) {
+      const thumb = thumbnails[i];
+
+      const thumbSrc = thumb.currentSrc || thumb.src;
+
+      if (
+        thumbSrc &&
+        (thumbSrc === currentSrc ||
+          decodeImageUrl(thumbSrc) === decodeImageUrl(currentSrc))
+      ) {
+        return thumb;
+      }
+    }
+
+    return null;
+  }
+
+  // ==========================================
+  // 5. CHUẨN HÓA URL ẢNH
+  // ==========================================
+
+  function decodeImageUrl(url) {
+    try {
+      return decodeURIComponent(url).split("?")[0].split("#")[0];
+    } catch (e) {
+      return url;
+    }
+  }
+
+  // ==========================================
+  // 6. CUỘN THUMBNAIL THEO ẢNH CHÍNH
+  // ==========================================
+
+  function syncGalleryThumbnail() {
+    if (!galleryThumbs) {
+      return;
+    }
+
+    const activeThumb = getCurrentGalleryThumbnail();
+
+    if (!activeThumb) {
+      return;
+    }
+
+    const containerRect = galleryThumbs.getBoundingClientRect();
+
+    const thumbRect = activeThumb.getBoundingClientRect();
+
+    /*
+     * Tâm thumbnail
+     */
+
+    const thumbCenter = thumbRect.left + thumbRect.width / 2;
+
+    /*
+     * Tâm vùng thumbnail
+     */
+
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    /*
+     * Khoảng cách cần cuộn
+     */
+
+    const distance = thumbCenter - containerCenter;
+
+    galleryThumbs.scrollTo({
+      left: galleryThumbs.scrollLeft + distance,
+
+      behavior: "smooth",
+    });
+  }
+
+  // ==========================================
+  // 7. THEO DÕI ACTIVE THUMBNAIL
+  // ==========================================
+
+  if (galleryThumbs) {
     const observer = new MutationObserver(function (mutations) {
+      let shouldSync = false;
+
       mutations.forEach(function (mutation) {
         if (
           mutation.type === "attributes" &&
@@ -64,13 +248,17 @@ document.addEventListener("DOMContentLoaded", function () {
             target.classList.contains("selected") ||
             target.getAttribute("aria-selected") === "true"
           ) {
-            scrollToActiveThumb(target);
+            shouldSync = true;
           }
         }
       });
+
+      if (shouldSync) {
+        syncGalleryThumbnail();
+      }
     });
 
-    observer.observe(modalThumbs, {
+    observer.observe(galleryThumbs, {
       attributes: true,
 
       subtree: true,
@@ -80,118 +268,45 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ==========================================
-  // 3. CUỘN THUMBNAIL ĐẾN ẢNH ĐANG CHỌN
+  // 8. KHI BẤM NEXT
   // ==========================================
 
-  window.scrollToActiveThumb = function (activeThumbElement) {
-    if (!activeThumbElement || !modalThumbs) {
-      return;
-    }
-
-    const thumbRect = activeThumbElement.getBoundingClientRect();
-
-    const containerRect = modalThumbs.getBoundingClientRect();
-
-    /*
-     * Tính khoảng cách từ tâm thumbnail
-     * đến tâm vùng thumbnail.
-     */
-
-    const thumbCenter = thumbRect.left + thumbRect.width / 2;
-
-    const containerCenter = containerRect.left + containerRect.width / 2;
-
-    const distance = thumbCenter - containerCenter;
-
-    modalThumbs.scrollTo({
-      left: modalThumbs.scrollLeft + distance,
-
-      behavior: "smooth",
+  if (galleryNextBtn) {
+    galleryNextBtn.addEventListener("click", function () {
+      setTimeout(function () {
+        syncGalleryThumbnail();
+      }, 80);
     });
-  };
+  }
 
   // ==========================================
-  // 4. CUỘN CHUỘT TRÊN ẢNH CHÍNH
+  // 9. KHI BẤM PREVIOUS
   // ==========================================
 
-  let wheelLocked = false;
+  if (galleryPrevBtn) {
+    galleryPrevBtn.addEventListener("click", function () {
+      setTimeout(function () {
+        syncGalleryThumbnail();
+      }, 80);
+    });
+  }
 
-  if (imageContainer) {
-    imageContainer.addEventListener(
-      "wheel",
-      function (e) {
-        /*
-         * Chỉ xử lý cuộn dọc.
-         */
+  // ==========================================
+  // 10. SWIPE ẢNH TRÊN ĐIỆN THOẠI
+  // ==========================================
 
-        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) {
-          return;
-        }
+  let startX = 0;
 
-        /*
-         * QUAN TRỌNG:
-         * Không cho trang phía sau popup cuộn.
-         */
+  let endX = 0;
 
-        e.preventDefault();
+  let isDragging = false;
 
-        /*
-         * Ngăn một lần lăn chuột mạnh
-         * chuyển qua nhiều ảnh.
-         */
-
-        if (wheelLocked) {
-          return;
-        }
-
-        wheelLocked = true;
-
-        /*
-         * Lăn xuống
-         * → Next
-         */
-
-        if (e.deltaY > 0) {
-          if (nextBtn) {
-            nextBtn.click();
-          }
-        } else {
-
-        /*
-         * Lăn lên
-         * → Previous
-         */
-          if (prevBtn) {
-            prevBtn.click();
-          }
-        }
-
-        /*
-         * Khóa trong thời gian ngắn.
-         */
-
-        setTimeout(function () {
-          wheelLocked = false;
-        }, 350);
-      },
-      {
-        passive: false,
-      },
-    );
-
-    // ==========================================
-    // 5. SWIPE / DRAG ẢNH CHÍNH
-    // ==========================================
-
-    let startX = 0;
-    let endX = 0;
-    let isDragging = false;
-
+  if (galleryImageContainer) {
     // ------------------------------------------
-    // MOBILE TOUCH START
+    // TOUCH START
     // ------------------------------------------
 
-    imageContainer.addEventListener(
+    galleryImageContainer.addEventListener(
       "touchstart",
       function (e) {
         if (!e.touches || !e.touches.length) {
@@ -206,10 +321,10 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // ------------------------------------------
-    // MOBILE TOUCH END
+    // TOUCH END
     // ------------------------------------------
 
-    imageContainer.addEventListener(
+    galleryImageContainer.addEventListener(
       "touchend",
       function (e) {
         if (!e.changedTouches || !e.changedTouches.length) {
@@ -218,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         endX = e.changedTouches[0].clientX;
 
-        handleSwipe();
+        handleGallerySwipe();
       },
       {
         passive: true,
@@ -226,20 +341,20 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // ------------------------------------------
-    // DESKTOP MOUSE DOWN
+    // MOUSE DOWN
     // ------------------------------------------
 
-    imageContainer.addEventListener("mousedown", function (e) {
+    galleryImageContainer.addEventListener("mousedown", function (e) {
       isDragging = true;
 
       startX = e.clientX;
     });
 
     // ------------------------------------------
-    // DESKTOP MOUSE UP
+    // MOUSE UP
     // ------------------------------------------
 
-    imageContainer.addEventListener("mouseup", function (e) {
+    galleryImageContainer.addEventListener("mouseup", function (e) {
       if (!isDragging) {
         return;
       }
@@ -248,52 +363,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
       endX = e.clientX;
 
-      handleSwipe();
+      handleGallerySwipe();
     });
 
     // ------------------------------------------
     // MOUSE LEAVE
     // ------------------------------------------
 
-    imageContainer.addEventListener("mouseleave", function () {
+    galleryImageContainer.addEventListener("mouseleave", function () {
       isDragging = false;
     });
   }
 
   // ==========================================
-  // 6. XỬ LÝ SWIPE
+  // 11. XỬ LÝ SWIPE
   // ==========================================
 
-  function handleSwipe() {
+  function handleGallerySwipe() {
     const threshold = 50;
 
     const diffX = startX - endX;
-
-    /*
-     * Chưa đủ khoảng cách
-     */
 
     if (Math.abs(diffX) <= threshold) {
       return;
     }
 
     /*
-     * Vuốt sang trái
+     * Vuốt trái
      * → Next
      */
 
     if (diffX > 0) {
-      if (nextBtn) {
-        nextBtn.click();
+      if (galleryNextBtn) {
+        galleryNextBtn.click();
       }
     } else {
+      /*
+       * Vuốt phải
+       * → Previous
+       */
 
-    /*
-     * Vuốt sang phải
-     * → Previous
-     */
-      if (prevBtn) {
-        prevBtn.click();
+      if (galleryPrevBtn) {
+        galleryPrevBtn.click();
       }
     }
   }
